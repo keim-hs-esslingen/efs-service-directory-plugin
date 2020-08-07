@@ -16,12 +16,12 @@
     
 	<name>Service Directory Plugin</name>
 	<description>A plugin that contains the components and capabilities to run a EFS middleware service-directory.</description>
-    <url>https://github.com/keim-hs-esslingen/service-directory-plugin</url>
+    <url>https://github.com/keim-hs-esslingen/efs-service-directory-plugin</url>
     
     <scm>
-        <connection>scm:git:git://github.com:keim-hs-esslingen/service-directory-plugin.git</connection>
-        <developerConnection>scm:git:ssh://github.com:keim-hs-esslingen/service-directory-plugin.git</developerConnection>
-        <url>https://github.com/keim-hs-esslingen/service-directory-plugin</url>
+        <connection>scm:git:git://github.com:keim-hs-esslingen/efs-service-directory-plugin.git</connection>
+        <developerConnection>scm:git:ssh://github.com:keim-hs-esslingen/efs-service-directory-plugin.git</developerConnection>
+        <url>https://github.com/keim-hs-esslingen/efs-service-directory-plugin</url>
     </scm>
     
     <licenses>
