@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: service-directory
+
+server:
+  port: 0
+
+stage:
+  host: localhost
+
+logging:
+  level:
+    org.springframework:
+      web: DEBUG
+      web.servlet.view.freemarker.FreeMarkerConfigurer: INFO
+    com.netflix.discovery: OFF
+  
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${stage.host}:${server.port}/eureka/
+  instance:
+    prefer-ip-address: true
+
