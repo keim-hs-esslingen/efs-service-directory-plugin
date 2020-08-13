@@ -12,7 +12,7 @@
     
 	<groupId>com.github.keim-hs-esslingen.efs</groupId>
 	<artifactId>service-directory-plugin</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
     
 	<name>Service Directory Plugin</name>
 	<description>A plugin that contains the components and capabilities to run a EFS middleware service-directory.</description>
@@ -42,7 +42,7 @@
 
 	<properties>
         <java.version>14</java.version>
-		<mobility-commons.version>1.0.1-SNAPSHOT</mobility-commons.version>
+		<mobility-commons.version>1.0.1</mobility-commons.version>
 	</properties>
 	
 	<dependencies>
@@ -132,6 +132,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.2.0</version>
+                        <configuration>
+                            <doclint>none</doclint>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
