@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+de.hsesslingen.keim.efs.servicedirectory.core.MobilityServiceRegistry,\
+de.hsesslingen.keim.efs.servicedirectory.core.MobilityServiceFinder,\
+de.hsesslingen.keim.efs.servicedirectory.controller.SearchApi,\
+de.hsesslingen.keim.efs.servicedirectory.controller.ServiceApi

@@ -58,15 +58,17 @@ public class SearchApi {
     @Autowired
     MobilityServiceFinder finder;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Search for Services", notes = "Searches for available service using the provided search-criteria "
             + "(only active service, services providing certain modes and/or mobility types)")
-    public List<MobilityService> search(@RequestParam(required = false, defaultValue = "") Set<MobilityType> mobilityTypes,
+    public List<MobilityService> search(
+            @RequestParam(required = false, defaultValue = "") Set<MobilityType> mobilityTypes,
             @RequestParam(required = false, defaultValue = "") Set<Mode> modes,
             @RequestParam(required = false, defaultValue = "") Set<String> serviceIds,
             @RequestParam(required = false, defaultValue = "true")
-            @ApiParam(value = "true - searches only for active services. false - searches for services regardless of its active status") boolean active) {
+            @ApiParam(value = "true - searches only for active services. false - searches for services regardless of its active status") boolean active
+    ) {
 
         return finder.search(mobilityTypes, modes, serviceIds, active);
     }
