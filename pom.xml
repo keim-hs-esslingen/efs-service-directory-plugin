@@ -6,13 +6,13 @@
     <parent>
 		<groupId>com.github.keim-hs-esslingen.efs</groupId>
 		<artifactId>efs-parent</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.1.0</version>
 		<relativePath/> <!-- skip parent lookup in parent directory. -->
 	</parent>
     
 	<groupId>com.github.keim-hs-esslingen.efs</groupId>
 	<artifactId>service-directory-plugin</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.3</version>
     
 	<name>Service Directory Plugin</name>
 	<description>A plugin that contains the components and capabilities to run a EFS middleware service-directory.</description>
@@ -42,7 +42,7 @@
 
 	<properties>
         <java.version>14</java.version>
-		<mobility-commons.version>1.0.3-SNAPSHOT</mobility-commons.version>
+		<mobility-commons.version>1.0.3</mobility-commons.version>
 	</properties>
 	
 	<dependencies>
