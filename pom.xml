@@ -72,11 +72,10 @@
 			<scope>test</scope>
 		</dependency>
         
-		<dependency>
-		    <groupId>io.springfox</groupId>
-		    <artifactId>springfox-swagger2</artifactId>
-            <optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+        </dependency>
 	</dependencies>
 	
 	<build>
