@@ -12,7 +12,7 @@
     
 	<groupId>com.github.keim-hs-esslingen.efs</groupId>
 	<artifactId>service-directory-plugin</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5-SNAPSHOT</version>
     
 	<name>Service Directory Plugin</name>
 	<description>A plugin that contains the components and capabilities to run a EFS middleware service-directory.</description>
