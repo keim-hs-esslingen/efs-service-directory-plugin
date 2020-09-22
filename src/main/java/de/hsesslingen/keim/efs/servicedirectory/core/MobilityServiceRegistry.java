@@ -32,8 +32,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class with CRUD functionalities for {@link MobilityService} Currently
@@ -45,7 +45,7 @@ import org.apache.commons.logging.LogFactory;
 @Component
 public class MobilityServiceRegistry {
 
-    private static final Log log = LogFactory.getLog(MobilityServiceRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(MobilityServiceRegistry.class);
 
     private Map<String, MobilityService> services = new HashMap<>();
 
@@ -82,7 +82,7 @@ public class MobilityServiceRegistry {
      * @return
      */
     public MobilityService register(MobilityService service) {
-        log.info("Registering new mobility service...");
+        logger.info("Registering new mobility service...");
 
         var id = service.getId();
 
@@ -103,7 +103,7 @@ public class MobilityServiceRegistry {
      * @return
      */
     public MobilityService update(String id, MobilityService service) {
-        log.info("Updating registered service with id " + id);
+        logger.info("Updating registered service with id " + id);
 
         if (!services.containsKey(id)) {
             throw new ResourceNotFoundException(String.format("Service with id [%s] not found", id));
@@ -121,7 +121,7 @@ public class MobilityServiceRegistry {
      * @param id
      */
     public void delete(String id) {
-        log.info("Deleting service with id " + id);
+        logger.info("Deleting service with id " + id);
         services.remove(id);
     }
 
@@ -129,7 +129,7 @@ public class MobilityServiceRegistry {
      * Deletes all registered services. Useful for testing.
      */
     public void deleteAll() {
-        log.info("Deleting all registered services...");
+        logger.info("Deleting all registered services...");
         services.clear();
     }
 
