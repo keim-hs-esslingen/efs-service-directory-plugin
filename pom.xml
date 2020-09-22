@@ -42,7 +42,7 @@
 
 	<properties>
         <java.version>14</java.version>
-		<mobility-commons.version>1.0.4</mobility-commons.version>
+		<mobility-commons.version>1.0.5-SNAPSHOT</mobility-commons.version>
 	</properties>
 	
 	<dependencies>
