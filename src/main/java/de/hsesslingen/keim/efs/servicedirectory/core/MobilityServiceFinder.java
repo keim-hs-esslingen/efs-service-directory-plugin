@@ -61,8 +61,8 @@ public class MobilityServiceFinder {
     public List<MobilityService> search(Set<MobilityType> mobilityTypes, Set<Mode> modes, Set<String> serviceIds, boolean excludeInactive) {
         return registry.streamAll(excludeInactive)
                 .filter(service
-                        -> (isEmpty(mobilityTypes) || !disjoint(mobilityTypes, service.getMobilityType()))
-                && (isEmpty(modes) || !disjoint(modes, service.getMode()))
+                        -> (isEmpty(mobilityTypes) || !disjoint(mobilityTypes, service.getMobilityTypes()))
+                && (isEmpty(modes) || !disjoint(modes, service.getModes()))
                 && (isEmpty(serviceIds) || serviceIds.stream().anyMatch(service.getId()::equalsIgnoreCase))
                 )
                 .collect(Collectors.toList());
