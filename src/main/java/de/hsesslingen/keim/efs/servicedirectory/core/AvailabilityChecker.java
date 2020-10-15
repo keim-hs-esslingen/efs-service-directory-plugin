@@ -75,6 +75,8 @@ public class AvailabilityChecker {
 
     @Scheduled(fixedRateString = "${service-directory.availability-checker.checking-rate:10000}")
     public void checkAlmostDueMobilityServices() {
+        logger.debug("Checking availability of mobility services... (Only those that are due.)");
+        
         var requests = registry.streamServiceStates()
                 // Filter out those services that are NOT due for checking...
                 .filter(pair -> isDueForChecking(pair.getRight()))
