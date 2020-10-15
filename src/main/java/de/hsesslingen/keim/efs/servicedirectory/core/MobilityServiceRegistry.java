@@ -24,17 +24,19 @@
 package de.hsesslingen.keim.efs.servicedirectory.core;
 
 import static de.hsesslingen.keim.efs.mobility.exception.HttpException.*;
-import org.springframework.stereotype.Component;
 
 import de.hsesslingen.keim.efs.mobility.exception.ResourceNotFoundException;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
  * Utility class with CRUD functionalities for {@link MobilityService} Currently
@@ -43,13 +45,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author k.sivarasah 12 Sep 2019
  */
-@Component
+@Service
 public class MobilityServiceRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(MobilityServiceRegistry.class);
 
     private Map<String, MobilityService> services = new HashMap<>();
-    private Map<String, Boolean> activeMap = new HashMap();
+    private Map<String, ActivityState> activityStateMap = new HashMap();
 
     /**
      * Returns a collection of services that are registered in the service
@@ -75,8 +77,7 @@ public class MobilityServiceRegistry {
      * Returns a stream of services that are registered in the service directory
      *
      * @param excludeInactive Whether inactive services should be excluded right
-     * away. Active services are never excluded. Use {@link #streamAll()}
-     * together with your own filter to accomplish this.
+     * away.
      * @return Stream of {@link MobilityService}s
      */
     public Stream<MobilityService> streamAll(boolean excludeInactive) {
@@ -85,6 +86,26 @@ public class MobilityServiceRegistry {
         } else {
             return streamAll();
         }
+    }
+
+    /**
+     * Creates a stream of pairs of services and their current activity states.
+     *
+     * @return
+     */
+    public Stream<Pair<MobilityService, ActivityState>> streamServiceStates() {
+        return streamAll().map(s -> Pair.of(s, getServiceState(s.getId())));
+    }
+
+    /**
+     * Gets the current activity state of the given service. If the service is
+     * not registered, this method returns null.
+     *
+     * @param serviceId
+     * @return
+     */
+    public ActivityState getServiceState(String serviceId) {
+        return activityStateMap.get(serviceId);
     }
 
     /**
@@ -110,8 +131,8 @@ public class MobilityServiceRegistry {
      * @return
      */
     public boolean isActive(String serviceId) {
-        var active = activeMap.get(serviceId);
-        return active == null ? false : active;
+        var state = activityStateMap.get(serviceId);
+        return state == null ? false : state.isActive();
     }
 
     /**
@@ -122,8 +143,32 @@ public class MobilityServiceRegistry {
      * @param value
      */
     public void setActive(String serviceId, boolean value) {
-        if (activeMap.containsKey(serviceId)) {
-            activeMap.put(serviceId, value);
+        if (activityStateMap.containsKey(serviceId)) {
+            activityStateMap.get(serviceId).setActive(value);
+        }
+    }
+
+    /**
+     * Marks the service with the given id as active, if such a service is
+     * registered.
+     *
+     * @param serviceId
+     */
+    public void markActive(String serviceId) {
+        if (services.containsKey(serviceId)) {
+            activityStateMap.get(serviceId).markActive();
+        }
+    }
+
+    /**
+     * Marks the service with the given id as inactive, if such a service is
+     * registered.
+     *
+     * @param serviceId
+     */
+    public void markInactive(String serviceId) {
+        if (services.containsKey(serviceId)) {
+            activityStateMap.get(serviceId).markInactive();
         }
     }
 
@@ -143,7 +188,7 @@ public class MobilityServiceRegistry {
         }
 
         services.put(id, service);
-        activeMap.put(id, true);
+        activityStateMap.put(id, ActivityState.active());
 
         return service;
     }
@@ -164,7 +209,7 @@ public class MobilityServiceRegistry {
 
         service.setId(id);
         services.put(id, service);
-        activeMap.put(id, true);
+        activityStateMap.get(id).markActive();
 
         return service;
     }
@@ -177,7 +222,7 @@ public class MobilityServiceRegistry {
     public void delete(String id) {
         logger.info("Deleting service with id " + id);
         services.remove(id);
-        activeMap.remove(id);
+        activityStateMap.remove(id);
     }
 
     /**
@@ -186,7 +231,50 @@ public class MobilityServiceRegistry {
     public void deleteAll() {
         logger.info("Deleting all registered services...");
         services.clear();
-        activeMap.clear();
+        activityStateMap.clear();
+    }
+
+    public static class ActivityState {
+
+        private boolean active;
+        private Instant lastUpdate;
+
+        public ActivityState(boolean active) {
+            this.active = active;
+            this.lastUpdate = Instant.now();
+        }
+
+        public ActivityState setActive(boolean value) {
+            this.active = value;
+            this.lastUpdate = Instant.now();
+            return this;
+        }
+
+        public ActivityState markInactive() {
+            setActive(false);
+            return this;
+        }
+
+        public ActivityState markActive() {
+            setActive(true);
+            return this;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public Instant getLastUpdate() {
+            return lastUpdate;
+        }
+
+        public static ActivityState active() {
+            return new ActivityState(true);
+        }
+
+        public static ActivityState inactive() {
+            return new ActivityState(false);
+        }
     }
 
 }
