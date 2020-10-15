@@ -24,19 +24,14 @@
 package de.hsesslingen.keim.efs.servicedirectory.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -57,9 +52,6 @@ public class MobilityServiceFinderTest {
 
     @Autowired
     MobilityServiceRegistry registry;
-
-    @MockBean
-    DiscoveryClient discovery;
 
     private static MobilityService[] services = new MobilityService[]{
         new MobilityService(
@@ -82,16 +74,10 @@ public class MobilityServiceFinderTest {
         )
     };
 
-    private static boolean oneTimePreparationDone = false;
     @Before
     public void prepare() {
-        if(oneTimePreparationDone){
-            return;
-        }
-        
-        oneTimePreparationDone = true;
-        
         registry.deleteAll();
+
         for (var service : services) {
             registry.register(service);
         }
@@ -99,20 +85,21 @@ public class MobilityServiceFinderTest {
 
     @Test
     public void searchTest() {
-        Set<Mode> modes = Set.of(Mode.CAR);
+        var modes = Set.of(Mode.CAR);
         assertEquals(1, finder.search(null, modes, null, false).size());
 
         modes = Set.of(Mode.CAR, Mode.BUS);
         assertEquals(1, finder.search(null, modes, null, false).size());
 
+        assertEquals(1, finder.search(null, modes, null, true).size());
+
+        registry.setActive("legendary-service-1", false);
         assertEquals(0, finder.search(null, modes, null, true).size());
     }
 
     @Test
     public void searchByModesTest() {
-        when(discovery.getServices()).thenReturn(registry.getAll().stream().map(MobilityService::getId).collect(Collectors.toList()));
-
-        Set<Mode> modes = Set.of(Mode.BICYCLE);
+        var modes = Set.of(Mode.BICYCLE);
         List<MobilityService> result;
 
         assertEquals(1, finder.searchByModes(modes).size());
@@ -127,16 +114,11 @@ public class MobilityServiceFinderTest {
         assertEquals(2, finder.searchByModes(null).size());
 
         assertEquals(0, finder.searchByModes(Set.of(Mode.CABLE_CAR)).size());
-
-        reset(discovery);
     }
 
     @Test
     public void searchByMobilityTypeTest() {
-
-        when(discovery.getServices()).thenReturn(registry.getAll().stream().map(MobilityService::getId).collect(Collectors.toList()));
-
-        Set<MobilityType> mTypes = Set.of(MobilityType.FREE_RIDE);
+        var mTypes = Set.of(MobilityType.FREE_RIDE);
         List<MobilityService> result;
 
         assertEquals(1, finder.searchByMobilityType(mTypes).size());
@@ -149,7 +131,5 @@ public class MobilityServiceFinderTest {
         assertTrue(result.containsAll(registry.getAll()));
 
         assertEquals(0, finder.searchByMobilityType(Set.of(MobilityType.FLIGHT)).size());
-
-        reset(discovery);
     }
 }

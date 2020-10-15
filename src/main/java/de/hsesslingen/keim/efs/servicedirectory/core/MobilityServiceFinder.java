@@ -23,19 +23,18 @@
  */
 package de.hsesslingen.keim.efs.servicedirectory.core;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import de.hsesslingen.keim.efs.mobility.service.MobilityType;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
+import static java.util.Collections.disjoint;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Utility class for finding registered services.
@@ -46,10 +45,7 @@ import de.hsesslingen.keim.efs.mobility.service.Mode;
 public class MobilityServiceFinder {
 
     @Autowired
-    MobilityServiceRegistry registry;
-
-    @Autowired
-    DiscoveryClient discovery;
+    private MobilityServiceRegistry registry;
 
     /**
      * Searches for services with consideration of the provided (optional)
@@ -58,16 +54,17 @@ public class MobilityServiceFinder {
      * @param mobilityTypes Set of {@link MobilityType}
      * @param modes Set of {@link Mode}
      * @param serviceIds Set of service ids to filter by
-     * @param active true = filter by active services only, false = ignore
-     * active status of the services
+     * @param excludeInactive Excludes inactive services from the result list.
+     * ignore active status of the services
      * @return List of {@link MobilityService}
      */
-    public List<MobilityService> search(Set<MobilityType> mobilityTypes, Set<Mode> modes, Set<String> serviceIds, boolean active) {
-        return registry.getAll().stream()
-                .filter(service -> (CollectionUtils.isEmpty(mobilityTypes) || !Collections.disjoint(mobilityTypes, service.getMobilityType()))
-                && (CollectionUtils.isEmpty(modes) || !Collections.disjoint(modes, service.getMode()))
-                && (serviceIds == null || serviceIds.isEmpty() || serviceIds.stream().anyMatch(service.getId().toLowerCase()::equalsIgnoreCase))
-                && (active == false || discovery == null || discovery.getServices().contains(service.getId())))
+    public List<MobilityService> search(Set<MobilityType> mobilityTypes, Set<Mode> modes, Set<String> serviceIds, boolean excludeInactive) {
+        return registry.streamAll(excludeInactive)
+                .filter(service
+                        -> (isEmpty(mobilityTypes) || !disjoint(mobilityTypes, service.getMobilityType()))
+                && (isEmpty(modes) || !disjoint(modes, service.getMode()))
+                && (isEmpty(serviceIds) || serviceIds.stream().anyMatch(service.getId()::equalsIgnoreCase))
+                )
                 .collect(Collectors.toList());
     }
 

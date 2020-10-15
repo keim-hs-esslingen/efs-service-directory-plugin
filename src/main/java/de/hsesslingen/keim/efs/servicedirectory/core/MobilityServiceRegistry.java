@@ -31,7 +31,8 @@ import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import java.util.stream.Stream;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,15 +49,42 @@ public class MobilityServiceRegistry {
     private static final Logger logger = LoggerFactory.getLogger(MobilityServiceRegistry.class);
 
     private Map<String, MobilityService> services = new HashMap<>();
+    private Map<String, Boolean> activeMap = new HashMap();
 
     /**
-     * Returns a collection of services that are registered to the service
+     * Returns a collection of services that are registered in the service
      * directory
      *
      * @return Collection of {@link MobilityService}s
      */
     public Collection<MobilityService> getAll() {
         return services.values();
+    }
+
+    /**
+     * Returns a collection of services that are registered in the service
+     * directory
+     *
+     * @return Collection of {@link MobilityService}s
+     */
+    public Stream<MobilityService> streamAll() {
+        return services.values().stream();
+    }
+
+    /**
+     * Returns a stream of services that are registered in the service directory
+     *
+     * @param excludeInactive Whether inactive services should be excluded right
+     * away. Active services are never excluded. Use {@link #streamAll()}
+     * together with your own filter to accomplish this.
+     * @return Stream of {@link MobilityService}s
+     */
+    public Stream<MobilityService> streamAll(boolean excludeInactive) {
+        if (excludeInactive) {
+            return streamAll().filter(s -> isActive(s.getId()));
+        } else {
+            return streamAll();
+        }
     }
 
     /**
@@ -76,6 +104,30 @@ public class MobilityServiceRegistry {
     }
 
     /**
+     * Tests whether the service with the given id is marked as active.
+     *
+     * @param serviceId
+     * @return
+     */
+    public boolean isActive(String serviceId) {
+        var active = activeMap.get(serviceId);
+        return active == null ? false : active;
+    }
+
+    /**
+     * Sets the "active" value for the given service to true, if such a service
+     * is registered.
+     *
+     * @param serviceId
+     * @param value
+     */
+    public void setActive(String serviceId, boolean value) {
+        if (activeMap.containsKey(serviceId)) {
+            activeMap.put(serviceId, value);
+        }
+    }
+
+    /**
      * Registeres the provided service in the registry.
      *
      * @param service
@@ -86,11 +138,12 @@ public class MobilityServiceRegistry {
 
         var id = service.getId();
 
-        if (StringUtils.isBlank(id)) {
+        if (isBlank(id)) {
             throw badRequest("The provided service does not have an id.");
         }
 
         services.put(id, service);
+        activeMap.put(id, true);
 
         return service;
     }
@@ -111,6 +164,7 @@ public class MobilityServiceRegistry {
 
         service.setId(id);
         services.put(id, service);
+        activeMap.put(id, true);
 
         return service;
     }
@@ -123,6 +177,7 @@ public class MobilityServiceRegistry {
     public void delete(String id) {
         logger.info("Deleting service with id " + id);
         services.remove(id);
+        activeMap.remove(id);
     }
 
     /**
@@ -131,6 +186,7 @@ public class MobilityServiceRegistry {
     public void deleteAll() {
         logger.info("Deleting all registered services...");
         services.clear();
+        activeMap.clear();
     }
 
 }
