@@ -49,9 +49,11 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import de.hsesslingen.keim.efs.mobility.exception.EfsError;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
+import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
 import de.hsesslingen.keim.efs.mobility.service.MobilityType;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
 import de.hsesslingen.keim.efs.servicedirectory.ServiceDirectoryPluginTestApplication;
+import java.util.EnumSet;
 import java.util.Set;
 import org.junit.Before;
 
@@ -77,7 +79,8 @@ public class SearchApiTest extends BaseClassApiTest {
         "http://legendary-service-1/",
         "Entire Spacetime-continuum",
         Set.of(MobilityType.FREE_RIDE),
-        Set.of(Mode.CAR)
+        Set.of(Mode.CAR),
+        EnumSet.allOf(API.class)
         ),
         new MobilityService(
         "legendary-service-2",
@@ -86,7 +89,8 @@ public class SearchApiTest extends BaseClassApiTest {
         "http://legendary-service-2/",
         "Entire Spacetime-continuum",
         Set.of(MobilityType.RIDE_HAILING),
-        Set.of(Mode.BICYCLE)
+        Set.of(Mode.BICYCLE),
+        EnumSet.allOf(API.class)
         )
     };
 

@@ -30,9 +30,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
+import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
 import de.hsesslingen.keim.efs.mobility.service.MobilityType;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
 import de.hsesslingen.keim.efs.servicedirectory.ServiceDirectoryPluginTestApplication;
+import java.util.EnumSet;
 import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -55,7 +57,8 @@ public class MobilityServiceRegistryTest {
         "http://legendary-service-1/",
         "Entire Spacetime-continuum",
         Set.of(MobilityType.FREE_RIDE),
-        Set.of(Mode.CAR)
+        Set.of(Mode.CAR),
+        EnumSet.allOf(API.class)
         ),
         new MobilityService(
         "legendary-service-2",
@@ -64,20 +67,15 @@ public class MobilityServiceRegistryTest {
         "http://legendary-service-2/",
         "Entire Spacetime-continuum",
         Set.of(MobilityType.RIDE_HAILING),
-        Set.of(Mode.BICYCLE)
+        Set.of(Mode.BICYCLE),
+        EnumSet.allOf(API.class)
         )
     };
 
-    private static boolean oneTimePreparationDone = false;
     @Before
     public void prepare() {
-        if(oneTimePreparationDone){
-            return;
-        }
-        
-        oneTimePreparationDone = true;
-        
         registry.deleteAll();
+
         for (var service : services) {
             registry.register(service);
         }
