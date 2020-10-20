@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.hsesslingen.keim.efs.mobility.config.EfsSwaggerApiResponseSupport;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
+import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
 import de.hsesslingen.keim.efs.mobility.service.MobilityType;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
 import de.hsesslingen.keim.efs.servicedirectory.core.MobilityServiceFinder;
@@ -66,10 +67,11 @@ public class SearchApi {
             @RequestParam(required = false, defaultValue = "") Set<MobilityType> mobilityTypes,
             @RequestParam(required = false, defaultValue = "") Set<Mode> modes,
             @RequestParam(required = false, defaultValue = "") Set<String> serviceIds,
+            @RequestParam(required = false, defaultValue = "") Set<API> apis,
             @RequestParam(required = false, defaultValue = "true")
             @ApiParam(value = "true - searches only for active services. false - searches for services regardless of its active status") boolean active
     ) {
 
-        return finder.search(mobilityTypes, modes, serviceIds, active);
+        return finder.search(mobilityTypes, modes, serviceIds, apis, active);
     }
 }

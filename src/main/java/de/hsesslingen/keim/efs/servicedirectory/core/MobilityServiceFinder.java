@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
+import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
 import de.hsesslingen.keim.efs.mobility.service.MobilityType;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
 import static java.util.Collections.disjoint;
@@ -53,17 +54,25 @@ public class MobilityServiceFinder {
      *
      * @param mobilityTypes Set of {@link MobilityType}
      * @param modes Set of {@link Mode}
-     * @param serviceIds Set of service ids to filter by
+     * @param serviceIds Set of service ids to filter by.
+     * @param apis Set of APIs of which a service must support all.
      * @param excludeInactive Excludes inactive services from the result list.
      * ignore active status of the services
      * @return List of {@link MobilityService}
      */
-    public List<MobilityService> search(Set<MobilityType> mobilityTypes, Set<Mode> modes, Set<String> serviceIds, boolean excludeInactive) {
+    public List<MobilityService> search(
+            Set<MobilityType> mobilityTypes,
+            Set<Mode> modes,
+            Set<String> serviceIds,
+            Set<API> apis,
+            boolean excludeInactive
+    ) {
         return registry.streamAll(excludeInactive)
                 .filter(service
                         -> (isEmpty(mobilityTypes) || !disjoint(mobilityTypes, service.getMobilityTypes()))
                 && (isEmpty(modes) || !disjoint(modes, service.getModes()))
                 && (isEmpty(serviceIds) || serviceIds.stream().anyMatch(service.getId()::equalsIgnoreCase))
+                && (isEmpty(apis) || service.getApis().containsAll(apis))
                 )
                 .collect(Collectors.toList());
     }
@@ -76,7 +85,7 @@ public class MobilityServiceFinder {
      * @return List of {@link MobilityService}
      */
     public List<MobilityService> searchByMobilityType(Set<MobilityType> mobilityTypes) {
-        return search(mobilityTypes, null, null, true);
+        return search(mobilityTypes, null, null, null, true);
     }
 
     /**
@@ -87,6 +96,6 @@ public class MobilityServiceFinder {
      * @return List of {@link Mode}
      */
     public List<MobilityService> searchByModes(Set<Mode> modes) {
-        return search(null, modes, null, true);
+        return search(null, modes, null, null, true);
     }
 }
