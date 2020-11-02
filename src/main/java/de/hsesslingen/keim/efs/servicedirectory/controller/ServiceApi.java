@@ -58,7 +58,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class ServiceApi {
 
     @Autowired
-    MobilityServiceRegistry registry;
+    private MobilityServiceRegistry registry;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

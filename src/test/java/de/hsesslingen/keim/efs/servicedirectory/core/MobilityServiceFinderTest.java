@@ -90,15 +90,15 @@ public class MobilityServiceFinderTest {
     @Test
     public void searchTest() {
         var modes = Set.of(Mode.CAR);
-        assertEquals(1, finder.search(null, modes, null, null, false).size());
+        assertEquals(1, finder.search(null, modes, null, false, null).size());
 
         modes = Set.of(Mode.CAR, Mode.BUS);
-        assertEquals(1, finder.search(null, modes, null, null, false).size());
+        assertEquals(1, finder.search(null, modes, null, false, null).size());
 
-        assertEquals(1, finder.search(null, modes, null, null, true).size());
+        assertEquals(1, finder.search(null, modes, null, true, null).size());
 
         registry.setActive("legendary-service-1", false);
-        assertEquals(0, finder.search(null, modes, null, null, true).size());
+        assertEquals(0, finder.search(null, modes, null, true, null).size());
     }
 
     @Test

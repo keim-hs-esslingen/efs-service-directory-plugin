@@ -56,16 +56,17 @@ public class MobilityServiceFinder {
      * @param modes Set of {@link Mode}
      * @param serviceIds Set of service ids to filter by.
      * @param apis Set of APIs of which a service must support all.
-     * @param excludeInactive Excludes inactive services from the result list.
-     * ignore active status of the services
+     * @param excludeInactive Excludes inactive mobility provider services from
+     * the result list.
+     *
      * @return List of {@link MobilityService}
      */
     public List<MobilityService> search(
             Set<MobilityType> mobilityTypes,
             Set<Mode> modes,
-            Set<String> serviceIds,
             Set<API> apis,
-            boolean excludeInactive
+            boolean excludeInactive,
+            Set<String> serviceIds
     ) {
         return registry.streamAll(excludeInactive)
                 .filter(service
@@ -85,7 +86,7 @@ public class MobilityServiceFinder {
      * @return List of {@link MobilityService}
      */
     public List<MobilityService> searchByMobilityType(Set<MobilityType> mobilityTypes) {
-        return search(mobilityTypes, null, null, null, true);
+        return search(mobilityTypes, null, null, true, null);
     }
 
     /**
@@ -96,6 +97,6 @@ public class MobilityServiceFinder {
      * @return List of {@link Mode}
      */
     public List<MobilityService> searchByModes(Set<Mode> modes) {
-        return search(null, modes, null, null, true);
+        return search(null, modes, null, true, null);
     }
 }

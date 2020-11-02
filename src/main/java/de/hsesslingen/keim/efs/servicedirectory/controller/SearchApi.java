@@ -57,21 +57,18 @@ import io.swagger.annotations.ApiParam;
 public class SearchApi {
 
     @Autowired
-    MobilityServiceFinder finder;
+    private MobilityServiceFinder finder;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Search for Services", notes = "Searches for available service using the provided search-criteria "
-            + "(only active service, services providing certain modes and/or mobility types)")
+    @ApiOperation(value = "Search for Services", notes = "Searches for available service using the provided search-criteria.")
     public List<MobilityService> search(
-            @RequestParam(required = false, defaultValue = "") Set<MobilityType> mobilityTypes,
-            @RequestParam(required = false, defaultValue = "") Set<Mode> modes,
-            @RequestParam(required = false, defaultValue = "") Set<String> serviceIds,
-            @RequestParam(required = false, defaultValue = "") Set<API> apis,
-            @RequestParam(required = false, defaultValue = "true")
-            @ApiParam(value = "true - searches only for active services. false - searches for services regardless of its active status") boolean active
+            @RequestParam(required = false, defaultValue = "") @ApiParam("Returns only those services, that support at least one of the given mobility types.") Set<MobilityType> mobilityTypes,
+            @RequestParam(required = false, defaultValue = "") @ApiParam("Returns only this services, that support at least one of the given modes.") Set<Mode> modes,
+            @RequestParam(required = false, defaultValue = "") @ApiParam("Returns only those services, that support ALL of the given APIs.") Set<API> apis,
+            @RequestParam(required = false, defaultValue = "true") @ApiParam(value = "Defines if inactive services should be excluded from the result list.") boolean excludeInactive,
+            @RequestParam(required = false, defaultValue = "") @ApiParam("Returns only services, whose ID is given in this list.") Set<String> serviceIds
     ) {
-
-        return finder.search(mobilityTypes, modes, serviceIds, apis, active);
+        return finder.search(mobilityTypes, modes, apis, excludeInactive, serviceIds);
     }
 }
