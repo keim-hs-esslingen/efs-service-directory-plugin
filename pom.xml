@@ -42,7 +42,6 @@
 
     <properties>
         <java.version>14</java.version>
-        <mobility-commons.version>2.0.1-SNAPSHOT</mobility-commons.version>
     </properties>
 	
     <dependencies>
