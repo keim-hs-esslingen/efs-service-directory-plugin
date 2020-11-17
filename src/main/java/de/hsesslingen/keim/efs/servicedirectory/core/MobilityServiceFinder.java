@@ -32,7 +32,6 @@ import org.springframework.stereotype.Component;
 
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
-import de.hsesslingen.keim.efs.mobility.service.MobilityType;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
 import static java.util.Collections.disjoint;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -52,7 +51,6 @@ public class MobilityServiceFinder {
      * Searches for services with consideration of the provided (optional)
      * parameters.
      *
-     * @param mobilityTypes Set of {@link MobilityType}
      * @param modes Set of {@link Mode}
      * @param serviceIds Set of service ids to filter by.
      * @param apis Set of APIs of which a service must support all.
@@ -62,7 +60,6 @@ public class MobilityServiceFinder {
      * @return List of {@link MobilityService}
      */
     public List<MobilityService> search(
-            Set<MobilityType> mobilityTypes,
             Set<Mode> modes,
             Set<API> apis,
             boolean excludeInactive,
@@ -70,8 +67,7 @@ public class MobilityServiceFinder {
     ) {
         return registry.streamAll(excludeInactive)
                 .filter(service
-                        -> (isEmpty(mobilityTypes) || !disjoint(mobilityTypes, service.getMobilityTypes()))
-                && (isEmpty(modes) || !disjoint(modes, service.getModes()))
+                        -> (isEmpty(modes) || !disjoint(modes, service.getModes()))
                 && (isEmpty(serviceIds) || serviceIds.stream().anyMatch(service.getId()::equalsIgnoreCase))
                 && (isEmpty(apis) || service.getApis().containsAll(apis))
                 )
@@ -82,21 +78,10 @@ public class MobilityServiceFinder {
      * Search for currently available services that provide the wished
      * {@link MobilityType}s
      *
-     * @param mobilityTypes Set of {@link MobilityType}
-     * @return List of {@link MobilityService}
-     */
-    public List<MobilityService> searchByMobilityType(Set<MobilityType> mobilityTypes) {
-        return search(mobilityTypes, null, null, true, null);
-    }
-
-    /**
-     * Search for currently available services that provide the wished
-     * {@link MobilityType}s
-     *
      * @param modes Set of {@link Mode}
      * @return List of {@link Mode}
      */
     public List<MobilityService> searchByModes(Set<Mode> modes) {
-        return search(null, modes, null, true, null);
+        return search(modes, null, true, null);
     }
 }

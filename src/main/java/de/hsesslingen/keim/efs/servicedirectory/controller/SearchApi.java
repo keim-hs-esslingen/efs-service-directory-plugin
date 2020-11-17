@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 import de.hsesslingen.keim.efs.mobility.config.EfsSwaggerApiResponseSupport;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
-import de.hsesslingen.keim.efs.mobility.service.MobilityType;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
 import de.hsesslingen.keim.efs.servicedirectory.core.MobilityServiceFinder;
 import io.swagger.annotations.Api;
@@ -63,12 +62,18 @@ public class SearchApi {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Search for Services", notes = "Searches for available service using the provided search-criteria.")
     public List<MobilityService> search(
-            @RequestParam(required = false, defaultValue = "") @ApiParam("Returns only those services, that support at least one of the given mobility types.") Set<MobilityType> mobilityTypes,
-            @RequestParam(required = false, defaultValue = "") @ApiParam("Returns only this services, that support at least one of the given modes.") Set<Mode> modes,
-            @RequestParam(required = false, defaultValue = "") @ApiParam("Returns only those services, that support ALL of the given APIs.") Set<API> apis,
-            @RequestParam(required = false, defaultValue = "true") @ApiParam(value = "Defines if inactive services should be excluded from the result list.") boolean excludeInactive,
-            @RequestParam(required = false, defaultValue = "") @ApiParam("Returns only services, whose ID is given in this list.") Set<String> serviceIds
+            @ApiParam("Returns only this services, that support at least one of the given modes.")
+            @RequestParam(required = false, defaultValue = "") Set<Mode> modes,
+            //
+            @ApiParam("Returns only those services, that support ALL of the given APIs.")
+            @RequestParam(required = false, defaultValue = "") Set<API> apis,
+            //
+            @ApiParam(value = "Defines if inactive services should be excluded from the result list.")
+            @RequestParam(required = false, defaultValue = "true") boolean excludeInactive,
+            //
+            @ApiParam("Returns only services, whose ID is given in this list.")
+            @RequestParam(required = false, defaultValue = "") Set<String> serviceIds
     ) {
-        return finder.search(mobilityTypes, modes, apis, excludeInactive, serviceIds);
+        return finder.search(modes, apis, excludeInactive, serviceIds);
     }
 }

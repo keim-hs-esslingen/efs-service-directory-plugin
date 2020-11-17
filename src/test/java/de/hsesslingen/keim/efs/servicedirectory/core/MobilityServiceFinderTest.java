@@ -37,7 +37,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
-import de.hsesslingen.keim.efs.mobility.service.MobilityType;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
 import de.hsesslingen.keim.efs.servicedirectory.ServiceDirectoryPluginTestApplication;
 import java.util.EnumSet;
@@ -62,7 +61,6 @@ public class MobilityServiceFinderTest {
         "Legendary Service 1",
         "http://legendary-service-1/",
         "Entire Spacetime-continuum",
-        Set.of(MobilityType.FREE_RIDE),
         Set.of(Mode.CAR),
         EnumSet.allOf(API.class)
         ),
@@ -72,7 +70,6 @@ public class MobilityServiceFinderTest {
         "Legendary Service 2",
         "http://legendary-service-2/",
         "Entire Spacetime-continuum",
-        Set.of(MobilityType.RIDE_HAILING),
         Set.of(Mode.BICYCLE),
         EnumSet.allOf(API.class)
         )
@@ -90,15 +87,15 @@ public class MobilityServiceFinderTest {
     @Test
     public void searchTest() {
         var modes = Set.of(Mode.CAR);
-        assertEquals(1, finder.search(null, modes, null, false, null).size());
+        assertEquals(1, finder.search(modes, null, false, null).size());
 
         modes = Set.of(Mode.CAR, Mode.BUS);
-        assertEquals(1, finder.search(null, modes, null, false, null).size());
+        assertEquals(1, finder.search(modes, null, false, null).size());
 
-        assertEquals(1, finder.search(null, modes, null, true, null).size());
+        assertEquals(1, finder.search(modes, null, true, null).size());
 
         registry.setActive("legendary-service-1", false);
-        assertEquals(0, finder.search(null, modes, null, true, null).size());
+        assertEquals(0, finder.search(modes, null, true, null).size());
     }
 
     @Test
@@ -117,23 +114,6 @@ public class MobilityServiceFinderTest {
 
         assertEquals(2, finder.searchByModes(null).size());
 
-        assertEquals(0, finder.searchByModes(Set.of(Mode.CABLE_CAR)).size());
-    }
-
-    @Test
-    public void searchByMobilityTypeTest() {
-        var mTypes = Set.of(MobilityType.FREE_RIDE);
-        List<MobilityService> result;
-
-        assertEquals(1, finder.searchByMobilityType(mTypes).size());
-
-        assertEquals(2, (result = finder.searchByMobilityType(null)).size());
-        assertTrue(result.containsAll(registry.getAll()));
-
-        mTypes = Set.of(MobilityType.FREE_RIDE, MobilityType.RIDE_HAILING);
-        assertEquals(2, (result = finder.searchByMobilityType(mTypes)).size());
-        assertTrue(result.containsAll(registry.getAll()));
-
-        assertEquals(0, finder.searchByMobilityType(Set.of(MobilityType.FLIGHT)).size());
+        assertEquals(0, finder.searchByModes(Set.of(Mode.CABLE_TRAM)).size());
     }
 }
