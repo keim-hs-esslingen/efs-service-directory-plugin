@@ -56,7 +56,8 @@ public class MobilityServiceRegistryTest {
         "http://legendary-service-1/",
         "Entire Spacetime-continuum",
         Set.of(Mode.CAR),
-        EnumSet.allOf(API.class)
+        EnumSet.allOf(API.class),
+        null
         ),
         new MobilityService(
         "legendary-service-2",
@@ -65,7 +66,8 @@ public class MobilityServiceRegistryTest {
         "http://legendary-service-2/",
         "Entire Spacetime-continuum",
         Set.of(Mode.BICYCLE),
-        EnumSet.allOf(API.class)
+        EnumSet.allOf(API.class),
+        null
         )
     };
 
