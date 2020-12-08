@@ -28,12 +28,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
 import static java.util.Collections.disjoint;
+import org.springframework.stereotype.Service;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
@@ -41,7 +41,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  *
  * @author k.sivarasah 12 Sep 2019
  */
-@Component
+@Service
 public class MobilityServiceFinder {
 
     @Autowired
