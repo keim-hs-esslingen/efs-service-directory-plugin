@@ -68,12 +68,13 @@ public class SearchApiTest extends BaseClassApiTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String searchUri = "/api/search";
+    private static final String SEARCH_URI = "/api/search";
 
-    private static MobilityService[] services = new MobilityService[]{
+    private static final MobilityService[] SERVICES = new MobilityService[]{
         new MobilityService(
         "legendary-service-1",
         "Legendary Services GmbH",
+        null,
         "Legendary Service 1",
         "http://legendary-service-1/",
         "Entire Spacetime-continuum",
@@ -84,6 +85,7 @@ public class SearchApiTest extends BaseClassApiTest {
         new MobilityService(
         "legendary-service-2",
         "Legendary Services GmbH",
+        null,
         "Legendary Service 2",
         "http://legendary-service-2/",
         "Entire Spacetime-continuum",
@@ -97,7 +99,7 @@ public class SearchApiTest extends BaseClassApiTest {
     public void prepare() {
         registry.deleteAll();
 
-        for (var service : services) {
+        for (var service : SERVICES) {
             registry.register(service);
         }
     }
@@ -106,7 +108,7 @@ public class SearchApiTest extends BaseClassApiTest {
     public void searchTest() throws Exception {
         assertNotNull(mockMvc);
 
-        MvcResult result = mockMvc.perform(get(searchUri).param("active", "false"))
+        MvcResult result = mockMvc.perform(get(SEARCH_URI).param("active", "false"))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
@@ -124,7 +126,7 @@ public class SearchApiTest extends BaseClassApiTest {
 
         registry.setActive("legendary-service-2", false);
 
-        MvcResult result = mockMvc.perform(get(searchUri).param("active", "true"))
+        MvcResult result = mockMvc.perform(get(SEARCH_URI).param("active", "true"))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
@@ -142,7 +144,7 @@ public class SearchApiTest extends BaseClassApiTest {
 
         MvcResult result = mockMvc
                 .perform(
-                        get(searchUri).param("active", "true").param("modes", "BICYCLE")
+                        get(SEARCH_URI).param("active", "true").param("modes", "BICYCLE")
                 )
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
@@ -163,7 +165,7 @@ public class SearchApiTest extends BaseClassApiTest {
     public void searchActiveServicesByModeTest_NoResult() throws Exception {
         assertNotNull(mockMvc);
 
-        MvcResult result = mockMvc.perform(get(searchUri).param("active", "true").param("modes", "TRAM"))
+        MvcResult result = mockMvc.perform(get(SEARCH_URI).param("active", "true").param("modes", "TRAM"))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
@@ -178,7 +180,7 @@ public class SearchApiTest extends BaseClassApiTest {
     public void searchActiveServicesByModeTest_BadRequest() throws Exception {
         assertNotNull(mockMvc);
 
-        MvcResult result = mockMvc.perform(get(searchUri).param("active", "true").param("modes", "UNKNOWN"))
+        MvcResult result = mockMvc.perform(get(SEARCH_URI).param("active", "true").param("modes", "UNKNOWN"))
                 .andExpect(status().isBadRequest())
                 .andDo(print())
                 .andReturn();
@@ -194,7 +196,7 @@ public class SearchApiTest extends BaseClassApiTest {
 
         registry.setActive("legendary-service-2", false);
 
-        MvcResult result = mockMvc.perform(get(searchUri).param("serviceIds", "UNKNOWN"))
+        MvcResult result = mockMvc.perform(get(SEARCH_URI).param("serviceIds", "UNKNOWN"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string("[]"))
                 .andDo(print())
@@ -210,7 +212,7 @@ public class SearchApiTest extends BaseClassApiTest {
 
         registry.setActive("legendary-service-2", false);
 
-        MvcResult result = mockMvc.perform(get(searchUri).param("serviceIds", "legendary-service-1"))
+        MvcResult result = mockMvc.perform(get(SEARCH_URI).param("serviceIds", "legendary-service-1"))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();

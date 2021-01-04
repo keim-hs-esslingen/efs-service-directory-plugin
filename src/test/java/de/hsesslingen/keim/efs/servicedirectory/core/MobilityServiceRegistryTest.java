@@ -52,6 +52,7 @@ public class MobilityServiceRegistryTest {
         new MobilityService(
         "legendary-service-1",
         "Legendary Services GmbH",
+        null,
         "Legendary Service 1",
         "http://legendary-service-1/",
         "Entire Spacetime-continuum",
@@ -62,6 +63,7 @@ public class MobilityServiceRegistryTest {
         new MobilityService(
         "legendary-service-2",
         "Legendary Services GmbH",
+        null,
         "Legendary Service 2",
         "http://legendary-service-2/",
         "Entire Spacetime-continuum",

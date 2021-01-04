@@ -70,14 +70,15 @@ public class ServiceApiTest extends BaseClassApiTest {
     @Autowired
     MockMvc mockMvc;
 
-    private static final String serviceUri = "/api/services";
-    private static final String serviceWithIdUri = "/api/services/{id}";
-    private static final String serviceId1 = "legendary-service-1";
+    private static final String SERVICE_URI = "/api/services";
+    private static final String SERVICE_WITH_ID_URI = "/api/services/{id}";
+    private static final String SERVICE_ID1 = "legendary-service-1";
 
-    private static MobilityService[] services = new MobilityService[]{
+    private static final MobilityService[] SERVICES = new MobilityService[]{
         new MobilityService(
         "legendary-service-1",
         "Legendary Services GmbH",
+        null,
         "Legendary Service 1",
         "http://legendary-service-1/",
         "Entire Spacetime-continuum",
@@ -88,6 +89,7 @@ public class ServiceApiTest extends BaseClassApiTest {
         new MobilityService(
         "legendary-service-2",
         "Legendary Services GmbH",
+        null,
         "Legendary Service 2",
         "http://legendary-service-2/",
         "Entire Spacetime-continuum",
@@ -101,14 +103,14 @@ public class ServiceApiTest extends BaseClassApiTest {
     public void prepare() {
         registry.deleteAll();
 
-        for (var service : services) {
+        for (var service : SERVICES) {
             registry.register(service);
         }
     }
 
     @Test
     public void getAllServicesTest() throws Exception {
-        MvcResult result = mockMvc.perform(get(serviceUri))
+        MvcResult result = mockMvc.perform(get(SERVICE_URI))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
@@ -121,19 +123,19 @@ public class ServiceApiTest extends BaseClassApiTest {
 
     @Test
     public void getServiceByIdTest() throws Exception {
-        MvcResult result = mockMvc.perform(get(serviceWithIdUri, serviceId1))
+        MvcResult result = mockMvc.perform(get(SERVICE_WITH_ID_URI, SERVICE_ID1))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
                 .andReturn();
 
         MobilityService service = mapper.readValue(result.getResponse().getContentAsByteArray(), MobilityService.class);
         assertNotNull(service);
-        assertEquals(getServiceFromRegistry(serviceId1), service);
+        assertEquals(getServiceFromRegistry(SERVICE_ID1), service);
     }
 
     @Test
     public void getServiceByIdTest_404() throws Exception {
-        MvcResult result = mockMvc.perform(get(serviceWithIdUri, "unknown_service_id"))
+        MvcResult result = mockMvc.perform(get(SERVICE_WITH_ID_URI, "unknown_service_id"))
                 .andExpect(status().isNotFound())
                 .andDo(print())
                 .andReturn();
@@ -145,8 +147,8 @@ public class ServiceApiTest extends BaseClassApiTest {
 
     @Test
     public void registerNewServiceTest() throws Exception {
-        MvcResult result = mockMvc.perform(post(serviceUri)
-                .content(toJsonString(getServiceFromRegistry(serviceId1)))
+        MvcResult result = mockMvc.perform(post(SERVICE_URI)
+                .content(toJsonString(getServiceFromRegistry(SERVICE_ID1)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
@@ -156,13 +158,13 @@ public class ServiceApiTest extends BaseClassApiTest {
                 result.getResponse().getContentAsByteArray(), MobilityService.class
         );
         assertNotNull(service);
-        assertEquals(getServiceFromRegistry(serviceId1), service);
+        assertEquals(getServiceFromRegistry(SERVICE_ID1), service);
     }
 
     @Test
     public void registerNewServiceTest_400() throws Exception {
-        MobilityService service = copy(getServiceFromRegistry(serviceId1)).setServiceUrl(null);
-        mockMvc.perform(post(serviceUri)
+        MobilityService service = copy(getServiceFromRegistry(SERVICE_ID1)).setServiceUrl(null);
+        mockMvc.perform(post(SERVICE_URI)
                 .content(toJsonString(service))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
@@ -173,8 +175,8 @@ public class ServiceApiTest extends BaseClassApiTest {
 
     @Test
     public void updateServiceTest() throws Exception {
-        MvcResult result = mockMvc.perform(put(serviceWithIdUri, serviceId1)
-                .content(toJsonString(getServiceFromRegistry(serviceId1)))
+        MvcResult result = mockMvc.perform(put(SERVICE_WITH_ID_URI, SERVICE_ID1)
+                .content(toJsonString(getServiceFromRegistry(SERVICE_ID1)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
@@ -184,6 +186,6 @@ public class ServiceApiTest extends BaseClassApiTest {
                 result.getResponse().getContentAsByteArray(), MobilityService.class
         );
         assertNotNull(service);
-        assertEquals(getServiceFromRegistry(serviceId1), service);
+        assertEquals(getServiceFromRegistry(SERVICE_ID1), service);
     }
 }
