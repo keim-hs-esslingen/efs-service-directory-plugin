@@ -49,7 +49,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StringUtils;
 
-import de.hsesslingen.keim.efs.mobility.exception.EfsError;
+import de.hsesslingen.keim.efs.mobility.exception.MiddlewareError;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
@@ -140,9 +140,9 @@ public class ServiceApiTest extends BaseClassApiTest {
                 .andDo(print())
                 .andReturn();
 
-        EfsError error = mapper.readValue(result.getResponse().getContentAsByteArray(), EfsError.class);
+        MiddlewareError error = mapper.readValue(result.getResponse().getContentAsByteArray(), MiddlewareError.class);
         assertFalse(StringUtils.isEmpty(error.getMessage()));
-        assertEquals(404, error.getCode());
+        assertEquals("404", error.getCode());
     }
 
     @Test

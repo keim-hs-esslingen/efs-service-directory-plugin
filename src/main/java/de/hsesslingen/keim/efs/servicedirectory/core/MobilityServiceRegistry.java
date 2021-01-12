@@ -25,7 +25,6 @@ package de.hsesslingen.keim.efs.servicedirectory.core;
 
 import static de.hsesslingen.keim.efs.mobility.exception.HttpException.*;
 
-import de.hsesslingen.keim.efs.mobility.exception.ResourceNotFoundException;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import java.time.Instant;
 import java.util.Collection;
@@ -50,8 +49,8 @@ public class MobilityServiceRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(MobilityServiceRegistry.class);
 
-    private Map<String, MobilityService> services = new HashMap<>();
-    private Map<String, ActivityState> activityStateMap = new HashMap();
+    private final Map<String, MobilityService> services = new HashMap<>();
+    private final Map<String, ActivityState> activityStateMap = new HashMap();
 
     /**
      * Returns a collection of services that are registered in the service
@@ -118,7 +117,7 @@ public class MobilityServiceRegistry {
         var service = services.get(id);
 
         if (service == null) {
-            throw new ResourceNotFoundException(String.format("Service with id [%s] not found", id));
+            throw notFound("Service with id [%s] not found", id);
         }
 
         return service;
@@ -204,7 +203,7 @@ public class MobilityServiceRegistry {
         logger.info("Updating registered service with id " + id);
 
         if (!services.containsKey(id)) {
-            throw new ResourceNotFoundException(String.format("Service with id [%s] not found", id));
+            throw notFound("Service with id [%s] not found", id);
         }
 
         service.setId(id);

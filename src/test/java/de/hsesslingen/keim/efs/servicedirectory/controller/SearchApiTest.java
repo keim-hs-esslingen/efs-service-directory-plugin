@@ -47,7 +47,7 @@ import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
-import de.hsesslingen.keim.efs.mobility.exception.EfsError;
+import de.hsesslingen.keim.efs.mobility.exception.MiddlewareError;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
 import de.hsesslingen.keim.efs.mobility.service.MobilityService.API;
 import de.hsesslingen.keim.efs.mobility.service.Mode;
@@ -185,9 +185,9 @@ public class SearchApiTest extends BaseClassApiTest {
                 .andDo(print())
                 .andReturn();
 
-        EfsError error = mapper.readValue(result.getResponse().getContentAsByteArray(), EfsError.class);
+        MiddlewareError error = mapper.readValue(result.getResponse().getContentAsByteArray(), MiddlewareError.class);
         assertFalse(StringUtils.isEmpty(error.getMessage()));
-        assertEquals(400, error.getCode());
+        assertEquals("400", error.getCode());
     }
 
     @Test

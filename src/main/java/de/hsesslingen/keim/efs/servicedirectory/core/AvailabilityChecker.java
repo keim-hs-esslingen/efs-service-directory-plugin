@@ -24,7 +24,8 @@
 package de.hsesslingen.keim.efs.servicedirectory.core;
 
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
-import de.hsesslingen.keim.efs.mobility.utils.EfsRequest;
+import de.hsesslingen.keim.efs.mobility.requests.DefaultRequestTemplate;
+import de.hsesslingen.keim.efs.mobility.requests.MiddlewareRequest;
 import de.hsesslingen.keim.efs.servicedirectory.core.MobilityServiceRegistry.ActivityState;
 import java.time.Duration;
 import java.time.Instant;
@@ -60,6 +61,9 @@ public class AvailabilityChecker {
     @Value("${service-directory.availability-checker.checking-rate:10000}")
     private int checkingRate;
 
+    @Autowired
+    private DefaultRequestTemplate rt;
+
     @PostConstruct
     public void init() {
         if (stateValidDuration == null) {
@@ -76,7 +80,7 @@ public class AvailabilityChecker {
     @Scheduled(fixedRateString = "${service-directory.availability-checker.checking-rate:10000}")
     public void checkAlmostDueMobilityServices() {
         logger.debug("Checking availability of mobility services... (Only those that are due.)");
-        
+
         var requests = registry.streamServiceStates()
                 // Filter out those services that are NOT due for checking...
                 .filter(pair -> isDueForChecking(pair.getRight()))
@@ -100,14 +104,14 @@ public class AvailabilityChecker {
 
     }
 
-    private EfsRequest<MobilityService> createServiceInfoRequest(MobilityService service) {
+    private MiddlewareRequest<MobilityService> createServiceInfoRequest(MobilityService service) {
         var baseUrl = service.getServiceUrl();
-        return EfsRequest.get(baseUrl + SERVICE_INFO_PATH)
-                .callOutgoingRequestAdapters()
+        return rt.get(baseUrl + SERVICE_INFO_PATH)
+                .callRequestAdapters()
                 .expect(MobilityService.class);
     }
 
-    private void checkServiceAvailability(EfsRequest<MobilityService> serviceInfoRequest, ActivityState state) {
+    private void checkServiceAvailability(MiddlewareRequest<MobilityService> serviceInfoRequest, ActivityState state) {
         ResponseEntity<MobilityService> response;
 
         try {
