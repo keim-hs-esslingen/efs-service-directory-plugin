@@ -11,7 +11,7 @@
     
     <groupId>com.github.keim-hs-esslingen.efs</groupId>
     <artifactId>service-directory-plugin</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.1-SNAPSHOT</version>
     
     <name>Service Directory Plugin</name>
     <description>A plugin that contains the components and capabilities to run a EFS middleware service-directory.</description>
@@ -21,7 +21,7 @@
         <connection>scm:git:https://github.com/keim-hs-esslingen/efs-service-directory-plugin.git</connection>
         <developerConnection>scm:git:https://github.com/keim-hs-esslingen/efs-service-directory-plugin.git</developerConnection>
         <url>https://github.com/keim-hs-esslingen/efs-service-directory-plugin</url>
-        <tag>Release-3.3.0</tag>
+        <tag>HEAD</tag>
     </scm>
     
     <licenses>
