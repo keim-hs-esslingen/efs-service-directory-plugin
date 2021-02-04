@@ -24,8 +24,8 @@
 package de.hsesslingen.keim.efs.servicedirectory.core;
 
 import de.hsesslingen.keim.efs.mobility.service.MobilityService;
-import de.hsesslingen.keim.efs.mobility.requests.DefaultRequestTemplate;
 import de.hsesslingen.keim.efs.mobility.requests.MiddlewareRequest;
+import de.hsesslingen.keim.efs.mobility.requests.MiddlewareRequestTemplate;
 import de.hsesslingen.keim.efs.servicedirectory.core.MobilityServiceRegistry.ActivityState;
 import java.time.Duration;
 import java.time.Instant;
@@ -62,7 +62,7 @@ public class AvailabilityChecker {
     private int checkingRate;
 
     @Autowired
-    private DefaultRequestTemplate rt;
+    private MiddlewareRequestTemplate rt;
 
     @PostConstruct
     public void init() {
