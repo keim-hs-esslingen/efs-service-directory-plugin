@@ -28,6 +28,8 @@ import de.hsesslingen.keim.efs.mobility.requests.MiddlewareRequestTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author k.sivarasah 26 Sep 2019
@@ -38,7 +40,9 @@ public class RequestConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public MiddlewareRequestTemplate requestTemplate() {
-        return new DefaultRequestTemplate();
+        var template = new RestTemplate();
+        template.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        return new DefaultRequestTemplate(template);
     }
 
 }
